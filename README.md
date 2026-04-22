@@ -11,7 +11,7 @@ Flask · MySQL · AWS SES · SMTP · REST API
 [![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-4479A1?style=flat-square&logo=mysql&logoColor=white)](https://mysql.com)
 [![AWS SES](https://img.shields.io/badge/AWS-SES-FF9900?style=flat-square&logo=amazonaws&logoColor=white)](https://aws.amazon.com/ses)
 [![License](https://img.shields.io/badge/Lisans-MIT-green?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Versiyon-v2.1.1-blue?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Versiyon-v2.1.2-blue?style=flat-square)](CHANGELOG.md)
 
 </div>
 
@@ -51,7 +51,9 @@ Dış bir SaaS servise bağımlı kalmadan kendi altyapınızda tam kontrol size
 | **Excel'den Toplu** | `.xlsx` yükle, sütun eşle, gönder |
 | **DB Tablosundan Toplu** | Daha önce yüklediğiniz tablolardan seçim yaparak gönder |
 | **Parçalı (Batch) Gönderim** | X mail gönder, Y dakika bekle — saatlik kota yönetimi |
+| **Tahmini Gönderim Süresi** | Alıcı sayısı × bekleme süresi hesaplanarak tahmini süre anlık gösterilir |
 | **SSE Canlı İzleme** | Gönderim sırasında her satır sonucu ekranda anlık görünür |
+| **Tarih Aralığı Filtresi** | Gönderim geçmişinde başlangıç/bitiş tarihi seçimi; default dün–bugün, UTC timezone bilinçli |
 | **Kuyruk Sistemi** | Hosting ortamında worker.py + cron ile arka plan gönderimi |
 
 ### 📡 Gönderici Desteği
@@ -471,6 +473,15 @@ mysql -u root -p mailsender_pro < migrate_v2.1.002.sql
 
 Detaylı sürüm geçmişi için [CHANGELOG.md](CHANGELOG.md) dosyasına bakın.
 
+### v2.1.2 (2026-04-22)
+- **send-log:** Tarih aralığı filtresi eklendi — default dün/bugün, UTC timezone bilinçli (`CONVERT_TZ`)
+- **send-log:** Tarih filtresi sayfalama ve CSV export'a da uygulandı
+- **bulk-send:** Gönderimler arası bekleme slider default `5000ms` → `500ms`
+- **bulk-send:** İlerleme polling aralığı `5000ms` → `2000ms`
+- **bulk-send:** Tahmini gönderim süresi hesaplama — alıcı sayısı × delay, slider hareketi ve liste yüklenince güncellenir
+- **bulk-send:** Gönderim Durumu başlığına canlı adres sayısı ve kalan süre tahmini eklendi
+- **worker.py:** Skip edilen adreslerde (`is_valid`, MX, disposable, spam trap vb.) gereksiz `time.sleep` kaldırıldı — delay yalnızca gerçek gönderim sonrası uygulanır
+
 ### v2.1.1 (2026-04-18)
 - `sns_handler.py` Blueprint entegrasyonu — yeni endpoint: `POST /sns/ses-notification`
 - `disposable_updater.py` worker entegrasyonu — 6 saatlik throttle ile otomatik güncelleme
@@ -514,6 +525,6 @@ MIT License — detaylar için [LICENSE](LICENSE) dosyasına bakın.
 
 <div align="center">
 
-**MailSender Pro** · v2.1.1 · Self-hosted · Türkçe
+**MailSender Pro** · v2.1.2 · Self-hosted · Türkçe
 
 </div>
